@@ -6,25 +6,34 @@
 /*   By: jmatute- <jmatute-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/02 17:20:35 by jmatute-          #+#    #+#             */
-/*   Updated: 2021/10/02 21:41:21 by jmatute-         ###   ########.fr       */
+/*   Updated: 2021/10/03 19:47:05 by jmatute-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
-#	define PIPEX_H
+# define PIPEX_H
 
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
+# include <unistd.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <fcntl.h>
+# include <sys/wait.h>
+# ifndef READ_END
+#  define READ_END  0
+# endif
+# ifndef WRITE_END
+#  define WRITE_END  1
+# endif
 
 typedef struct s_pipex
 {
 	char	*path;
 	char	**m_route;
 }			t_pipex;
-char 	*ft_strdup(const char *s);
+char	*ft_strdup(const char *s);
 size_t	ft_strlen(const char *s);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	**ft_split(char const *s, char c);
 char	*ft_strjoin(char const *s1, char const *s2);
+void	superfree(char **matriz);
 #endif

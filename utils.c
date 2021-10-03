@@ -6,23 +6,20 @@
 /*   By: jmatute- <jmatute-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/02 17:20:11 by jmatute-          #+#    #+#             */
-/*   Updated: 2021/10/02 19:03:56 by jmatute-         ###   ########.fr       */
+/*   Updated: 2021/10/03 15:00:44 by jmatute-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
+void	superfree(char **matriz)
 {
-	size_t	count;
+	int	i;
 
-	count = 0;
-	while ((s1[count] || s2[count]) && count < n)
+	i = 0;
+	while (matriz[i])
 	{
-		if (s1[count] != s2[count])
-			return ((unsigned char)s1[count] - (unsigned char)s2[count]);
-		count++;
+		free(matriz[i]);
+		i++;
 	}
-	return (0);
 }
-
