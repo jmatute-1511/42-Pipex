@@ -17,13 +17,27 @@ char	*find_path(char **envp)
 	int	i;
 
 	i = 0;
-	while (envp[i] != '\0')
+	while (envp[i] != 0)
 	{
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
 			break ;
 		i++;
 	}
 	return (envp[i]);
+}
+
+void	superfree(char **matriz)
+{
+	int i;
+
+	i = 0;
+	while (matriz[i])
+	{
+		free(matriz[i]);
+		matriz[i] = NULL;
+		i++;
+	}
+	matriz = NULL;
 }
 
 char	*location_commands(char *argv, char **envp, t_pipex *pipex)
@@ -33,11 +47,10 @@ char	*location_commands(char *argv, char **envp, t_pipex *pipex)
 	char	**first;
 	int		i;
 
-	if (access(argv, X_OK) == 0)
-		return (argv);
+	i = 0;
 	pipex->path = find_path(envp);
 	pipex->m_route = ft_split(&pipex->path[5], ':');
-	first = ft_split(argv[1], ' ');
+	first = ft_split(argv, ' ');
 	while (pipex->m_route[i])
 	{
 		aux = ft_strjoin(pipex->m_route[i],"/");
@@ -45,12 +58,17 @@ char	*location_commands(char *argv, char **envp, t_pipex *pipex)
 		if (access(command, X_OK) == 0)
 			break ;
 		free(command);
+		command = NULL;
+		free(aux);
+		aux = NULL;
 		i++;
 	}
-	if (access(command, X_OK) != 0)
-		command = NULL;
+	free(aux);
+	aux = NULL;
 	superfree(pipex->m_route);
 	superfree(first);
+	first =NULL;
+	pipex->m_route =NULL;
 	return (command);
 }
 void saltamontes1(char *path,char **argv, char **envp, int *fd)
@@ -78,7 +96,7 @@ void saltamontes2(char *path,char **argv, char **envp, int *fd)
 	close(fd[READ_END]);
 	dup2(fd[WRITE_END],STDOUT_FILENO);
 	close(fd_read);
-	commands = ft_split(argv[2], ' ');
+	commands = ft_split(argv[3], ' ');
 	execve(path,commands,envp);
 	superfree(commands);
 }
@@ -86,15 +104,23 @@ int	main(int argc, char **argv, char **envp)
 {
 	int	fd[2];
 	int	pid;
+	int status;
 	t_pipex pipex;
 
 	pipe(fd);
+	pipex.secure_path = location_commands(argv[2],envp,&pipex);
 	pid = fork();
-	pipex.path = location_commands(argv,envp,&pipex);
-
 	if (pid == 0)
-		saltamontes1(pipex.path, argv, envp, fd);
+		saltamontes1(pipex.secure_wsl+path, argv, envp, fd);
 	else
-
-
+		{
+			close(fd[WRITE_END]);
+			pid =fork();
+			free(pipex.secure_path);
+			pipex.secure_path= location_commands(argv[3],envp,&pipex);
+			if (pid == 0)
+			saltamontes2(pipex.secure_path, argv, envp, fd);
+			wait(&status);
+		}
+	return(0);
 }

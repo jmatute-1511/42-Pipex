@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # include <sys/wait.h>
+# include "libft.h"
 # ifndef READ_END
 #  define READ_END  0
 # endif
@@ -28,12 +29,15 @@
 typedef struct s_pipex
 {
 	char	*path;
+	char	*secure_path;
 	char	**m_route;
 }			t_pipex;
-char	*ft_strdup(const char *s);
+
 size_t	ft_strlen(const char *s);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	**ft_split(char const *s, char c);
 char	*ft_strjoin(char const *s1, char const *s2);
 void	superfree(char **matriz);
+char	*location_commands(char *argv, char **envp, t_pipex *pipex);
+char	*find_path(char **envp);
 #endif
